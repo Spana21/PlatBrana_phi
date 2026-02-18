@@ -1,0 +1,401 @@
+/* Reset a základ */
+* { box-sizing: border-box; }
+body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+.app-container {
+  /* Simulace pozadí původní stránky (rozmazaný text z obrázku) */
+  background: url('https://via.placeholder.com/1920x1080/333333/333333') no-repeat center center fixed; 
+  background-size: cover;
+  height: 100vh;
+}
+
+/* =========================================
+   1. HLAVNÍ GOPAY BRÁNA
+   ========================================= */
+.gopay-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.65); /* Tmavé poloprůhledné pozadí */
+  backdrop-filter: blur(2px); /* Jemné rozostření pozadí */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Vycentrování okna */
+  padding: 20px;
+  z-index: 10; /* Základní vrstva */
+}
+
+.payment-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 420px; /* Šířka podle předlohy */
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden; /* Aby hlavička neořízla kulaté rohy */
+}
+
+/* --- HLAVIČKA --- */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pointer { cursor: pointer; color: #666; }
+
+/* --- LOGO --- */
+.logo-section {
+  text-align: center;
+  padding: 20px 0 10px;
+}
+/* Prozatímní styl loga, dokud nevložíš SVG */
+.gopay-logo-text {
+  font-size: 28px; font-weight: 900; color: #004b87; letter-spacing: -1px;
+}
+
+/* --- ZÁLOŽKY (TABS) --- */
+.tabs-section {
+  display: flex;
+  padding: 15px 20px;
+  gap: 10px;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab.active {
+  background-color: #e0e0e0;
+  color: #333;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tab.inactive {
+  background-color: #f5f5f5;
+  color: #999;
+  border: 1px solid #eee;
+}
+
+/* --- FORMULÁŘ --- */
+.payment-form {
+  padding: 0 20px 25px;
+}
+
+.input-group { margin-bottom: 12px; }
+.form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.flex-1 { flex: 1; }
+
+/* Stylování inputů a ikonek uvnitř */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #0086d6;
+}
+
+/* Pozicování ikonek */
+.field-icon-left {
+  position: absolute;
+  left: 12px;
+  color: #999;
+  pointer-events: none; /* Aby šlo kliknout skrz ně do inputu */
+}
+
+.field-icon-right {
+  position: absolute;
+  right: 12px;
+  color: #ccc;
+}
+
+/* Odsazení textu v inputu, aby nepřekrýval ikonky */
+.left-icon input { padding-left: 42px; }
+.right-icon input { padding-right: 40px; }
+.right-icons input { padding-right: 100px; } /* Pro input s kartami */
+
+/* Ikonky karet vpravo */
+.field-icons-right.cards {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Styl pro hlavní logo GoPay */
+.gopay-logo-img {
+  height: 35px; /* Uprav podle potřeby, aby to nebylo moc velké/malé */
+  width: auto;
+  display: inline-block;
+}
+
+/* Styl pro malá loga karet uvnitř inputu */
+.card-logo-img {
+  height: 33px; /* 16px se krásně vejde do výšky inputu */
+  width: auto;
+  object-fit: contain;
+  margin: 0 2px;
+}
+
+
+
+/* Plná barva pro aktivní logo (pro tvůj chytrý JS) */
+.card-logo-img.active-logo {
+  opacity: 1;
+  filter: grayscale(0%);
+  transform: scale(1.1); /* Mírně se zvětší pro důraz */
+  transition: all 0.3s ease;
+}
+
+/* --- PŘEPÍNAČ (TOGGLE SWITCH) --- */
+.toggle-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #555;
+}
+.info-icon-small { color: #ccc; margin-left: 8px; width: 16px; height: 16px; }
+.toggle-switch-wrapper { margin-left: auto; }
+
+/* Skrytý checkbox */
+.toggle-input { display: none; }
+
+/* Vzhled přepínače */
+.toggle-label {
+  display: block;
+  width: 44px; height: 24px;
+  background-color: #ddd;
+  border-radius: 24px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+/* Kolečko uvnitř */
+.toggle-label::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+/* Stav po zaškrtnutí */
+.toggle-input:checked + .toggle-label { background-color: #0086d6; }
+.toggle-input:checked + .toggle-label::after { transform: translateX(20px); }
+
+/* --- TLAČÍTKO ZAPLATIT --- */
+.pay-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #0086d6; /* GoPay modrá */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.pay-button:hover { background-color: #0070b8; }
+
+
+/* =========================================
+   2. MODÁLNÍ OKNO DIPLOMKA (ČERNÉ)
+   ========================================= */
+
+/* Přejmenováno z .modal-overlay na .diplomka-overlay */
+.diplomka-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* Tmavé pozadí okolo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+  
+  /* TADY JE TO KOUZLO: číslo 99999 zajistí, že to překryje GoPay bránu! */
+  z-index: 99999; 
+}
+
+/* Přejmenováno z .modal-content na .diplomka-content */
+.diplomka-content {
+  background-color: black;
+  color: red;
+  padding: 30px 20px;
+  border: 3px solid red;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+  
+  width: 95%;        /* Širší na mobilech */
+  max-width: 1100px;
+  
+  height: auto;
+  max-height: 90vh;   /* Maximálně 90 % výšky obrazovky */
+  overflow-y: auto;   /* Povolit rolování, pokud se to nevejde */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.diplomka-content h3 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.modal-text {
+  color: white;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+/* --- STYL PRO SELECT V MODÁLNÍM OKNĚ --- */
+.modal-select {
+  width: 100%;          /* Opraveno ze 110% na 100% */
+  max-width: 600px;      /* Ale ne zbytečně široký na PC */
+  padding: 12px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 5px;
+  
+  /* Tmavý design aby ladil s oknem */
+  background-color: #222; 
+  color: white;
+  border: 2px solid #444;
+  
+  cursor: pointer;
+  outline: none; 
+  transition: border-color 0.3s;
+  
+  /* Pro lepší vzhled na některých prohlížečích */
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* šipka dolů  */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FF0000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20128c3.6%203.6%207.8%205.4%2013%205.4s9.3-1.8%2013-5.4l128-128c3.5-3.6%205.4-7.8%205.4-13%200-5-3.5-9.3-5.4-13z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px top 50%;
+  background-size: 12px auto;
+}
+
+.section-title {
+  color: rgb(255, 255, 255);
+  font-size: 1.10rem;
+  margin-bottom: 10px;
+  margin-top: 2px;
+}
+
+.modal-select:focus,
+.modal-select:hover {
+  border-color: red; /* Při najetí nebo kliknutí zčervená rámeček */
+}
+
+/* Styl pro možnosti uvnitř selectu */
+.modal-select option {
+  background-color: white;
+  color: black;
+}
+
+/* --- SOUHLAS --- */
+.agreement-wrapper {
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  color: red;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.checkbox-container input {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: red;
+}
+
+/* --- TLAČÍTKO STÁHNOUT/ZAVŘÍT --- */
+.close-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background-color: darkred;
+  transform: scale(1.02);
+}
+
+.close-btn:disabled {
+  background-color: #333;
+  color: #777;
+  cursor: not-allowed;
+  border: 1px solid #555;
+  transform: none;
+}
+
+/* --- CHYBOVÁ HLÁŠKA --- */
+.error-message {
+  color: #d9534f; /* Výstražná červená barva */
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: 500;
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
