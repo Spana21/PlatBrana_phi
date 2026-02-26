@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 
-// Tady si definujeme adresu Workeru (stejná jako v LoginScreen)
-const WORKER_URL = "";
+// Tady si definujeme adresu Workeru (stejná jako v App.jsx)
+const WORKER_URL = ""; 
 
 function DiplomkaModal({ isOpen, onClose }) {
   const [isAgreed, setIsAgreed] = useState(false);
   const [selectedAge, setSelectedAge] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
   const ageGroups = [
-    "Méně než 17", "18 - 24", "25 - 34", "35 - 44",
+    "Méně než 18", "18 - 24", "25 - 34", "35 - 44",
     "45 - 54", "55 - 64", "65 a více"
   ];
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
+    setIsSubmitting(true);
+    
     // 1. Spustíme stažení souboru (simulace)
     const link = document.createElement('a');
     link.href = '/informovany_souhlas.pdf'; 
@@ -23,68 +26,126 @@ function DiplomkaModal({ isOpen, onClose }) {
     link.click();
     document.body.removeChild(link);
 
-    // 2. NOVÉ: Odešleme vybraný věk na server
-    fetch(`${WORKER_URL}/wtf`, {
-      method: 'POST', // Používáme POST pro odeslání dat
-      keepalive: true,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ age: selectedAge }) // Pošleme vybraný věk
-    })
-    .then(res => console.log("Věk odeslán do statistiky"))
-    .catch(err => console.error("Chyba při odesílání věku:", err));
+    // 2. Odešleme vybraný věk na server (pokud je URL nastavena)
+    if (WORKER_URL) {
+      try {
+        await fetch(`${WORKER_URL}/wtf`, {
+          method: 'POST',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ age: selectedAge })
+        });
+        console.log("Statistická data byla úspěšně odeslána.");
+      } catch (err) {
+        console.error("Chyba při odesílání dat:", err);
+      }
+    }
     
-    // 3. Zavřeme okno
+    setIsSubmitting(false);
     onClose();
   };
 
   return (
-    <div className="diplomka-overlay">
-      <div className="diplomka-content">
-        <h3>Toto je diplomová práce</h3>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <header className="modal-header">
+          <div className="warning-icon">⚠️</div>
+          <h3>Pozor: Toto byla simulace Quishingu (QR Phishing)</h3>
+        </header>
         
-        <p className="modal-text">
-          Pro pokračování prosím vyplňte následující údaje a potvrďte souhlas.
-        </p>
+        <div className="modal-body">
+          <section className="modal-info-section">
+            <p className="modal-text">
+              Právě jste interagovali s testovací stránkou vytvořenou pro účely <strong>výzkumu v rámci diplomové práce</strong>. 
+              Tato stránka pouze napodobuje vzhled platební brány GoPay, aby demonstrovala, jak snadno lze vytvořit věrohodnou kopii platebního rozhraní.
+            </p>
+            
+            <div className="security-guarantee">
+              <h4>🛡️ Vaše soukromí je 100% zachováno</h4>
+              <p>
+                V souladu s etickými pravidly výzkumu <strong>nebyla uložena žádná citlivá data</strong>. Číslo vaší karty, platnost ani CVC kód 
+                nebyly odeslány na server ani nikde zaznamenány. Systém pouze eviduje anonymní údaj o pokusu o platbu pro statistické vyhodnocení.
+              </p>
+            </div>
+          </section>
 
-        {/* --- VÝBĚR VĚKU --- */}
-        <div className="age-selection-section">
-          <p className="section-title">Jaký je váš věk?</p>
-          <select 
-            className="modal-select"
-            value={selectedAge}
-            onChange={(e) => setSelectedAge(e.target.value)}
+          <section className="education-section">
+            <h4>💡 Jak nenaletět: Co je to Quishing a jak se bránit?</h4>
+            <div className="edu-grid">
+              <div className="edu-item">
+                <span className="edu-icon">📱</span>
+                <div>
+                  <strong>Kontrola URL po naskenování:</strong> Moderní čtečky QR kódů vám před otevřením ukážou cílovou adresu. Pokud vede na jinou doménu než oficiální (např. <code>platba-parkovne.cz</code> místo <code>gopay.cz</code>), stránku neotvírejte.
+                </div>
+              </div>
+              <div className="edu-item">
+                <span className="edu-icon">🕵️</span>
+                <div>
+                  <strong>Fyzická kontrola kódu:</strong> Pokud skenujete QR kód na veřejném místě (např. na parkovacím automatu), zkontrolujte, zda se nejedná o <strong>přelepku</strong>. Útočníci často legitimní kód jednoduše přelepí svým podvodným.
+                </div>
+              </div>
+              <div className="edu-item">
+                <span className="edu-icon">🔗</span>
+                <div>
+                  <strong>Zkracovače adres:</strong> Buďte extrémně opatrní, pokud QR kód vede na zkrácenou adresu (např. <code>bit.ly</code> nebo <code>tinyurl.com</code>). Oficiální instituce a platební brány zkracovače v QR kódech pro platby nepoužívají.
+                </div>
+              </div>
+              <div className="edu-item">
+                <span className="edu-icon">💳</span>
+                <div>
+                  <strong>Preferujte oficiální aplikace:</strong> Místo skenování náhodných QR kódů raději využívejte oficiální aplikace služeb (např. MPLA pro parkování) nebo zadejte adresu webu ručně do prohlížeče.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div className="research-form">
+            <p className="section-title">Pomozte mi s výzkumem – anonymní údaje</p>
+            
+            <div className="form-controls">
+              <div className="select-wrapper">
+                <label>Váš věk:</label>
+                <select 
+                  className="modal-select"
+                  value={selectedAge}
+                  onChange={(e) => setSelectedAge(e.target.value)}
+                >
+                  <option value="" disabled>Vyberte věkovou skupinu...</option>
+                  {ageGroups.map((age) => (
+                    <option key={age} value={age}>{age} let</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="agreement-wrapper">
+                <label className="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    checked={isAgreed}
+                    onChange={(e) => setIsAgreed(e.target.checked)}
+                  />
+                  Souhlasím se zapojením do anonymního výzkumu
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer className="modal-footer">
+          <p className="small-note">Kliknutím dokončíte simulaci a stáhnete Informovaný souhlas (PDF).</p>
+          <button 
+            onClick={handleDownload} 
+            className="close-btn"
+            disabled={!isAgreed || !selectedAge || isSubmitting} 
           >
-            <option value="" disabled>Vyberte prosím věkovou skupinu...</option>
-            {ageGroups.map((age) => (
-              <option key={age} value={age} style={{color: 'black'}}>
-                {age} let
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* --- SOUHLAS --- */}
-        <div className="agreement-wrapper">
-          <label className="checkbox-container">
-            <input 
-              type="checkbox" 
-              checked={isAgreed}
-              onChange={(e) => setIsAgreed(e.target.checked)}
-            />
-            Souhlasím
-          </label>
-        </div>
-
-        {/* --- TLAČÍTKO --- */}
-        <button 
-          onClick={handleDownload} 
-          className="close-btn"
-          disabled={!isAgreed || !selectedAge} 
-        >
-          Stáhnout dokument
-        </button>
+            {isSubmitting ? 'Odesílám...' : 'Dokončit a stáhnout PDF'}
+          </button>
+          <p className="github-info">
+            Kód projektu je dostupný na <a href="https://github.com/Spana21/PlatBrana_phi" target="_blank" rel="noopener noreferrer" className="github-link">GitHubu</a>.
+          </p>
+        </footer>
       </div>
     </div>
   );
