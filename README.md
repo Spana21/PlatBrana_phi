@@ -1,5 +1,5 @@
 # 📱 Simulace Quishingu
-### 🎓 Diplomová práce Úspěšnost kybernetických útoků na různé věkové skupiny    
+### 🎓 Diplomová práce: Úspěšnost kybernetických útoků na různé věkové skupiny    
 
 ![React](https://img.shields.io/badge/Webová_aplikace-React-blue?style=for-the-badge&logo=react)
 ![Security](https://img.shields.io/badge/Zaměření-Bezpečnost-green?style=for-the-badge)
