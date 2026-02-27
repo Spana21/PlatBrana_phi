@@ -18,7 +18,7 @@ function DiplomkaModal({ isOpen, onClose }) {
   const handleDownload = async () => {
     setIsSubmitting(true);
     
-    // 1. Spustíme stažení souboru (simulace)
+    // 1. Spustí stažení souboru
     const link = document.createElement('a');
     link.href = '/informovany_souhlas.pdf'; 
     link.download = 'Informovany_souhlas_ucastnika.pdf'; 
@@ -26,7 +26,7 @@ function DiplomkaModal({ isOpen, onClose }) {
     link.click();
     document.body.removeChild(link);
 
-    // 2. Odešleme vybraný věk na server (pokud je URL nastavena)
+    // 2. Odešle vybraný věk na server
     if (WORKER_URL) {
       try {
         await fetch(`${WORKER_URL}/wtf`, {
