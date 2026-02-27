@@ -66,24 +66,25 @@ function DiplomkaModal({ isOpen, onClose }) {
               <h4>🛡️ Vaše soukromí je 100% zachováno</h4>
               <p>
                 V souladu s etickými pravidly výzkumu <strong>nebyla uložena žádná citlivá data</strong>. Číslo vaší karty, platnost ani CVC kód 
-                nebyly odeslány na server ani nikde zaznamenány. Systém pouze eviduje anonymní údaj o pokusu o platbu pro statistické vyhodnocení.
+                nebyly odeslány na server ani nikde zaznamenány. Systém pouze eviduje anonymní statistiku (že na stránku někdo přišel a klikl na tlačítko). 
+             <p><strong>Jediný údaj, který o sobě můžete dobrovolně poskytnout pro potřeby výzkumu, je vaše věková kategorie níže.</strong></p>
               </p>
             </div>
           </section>
 
           <section className="education-section">
-            <h4>💡 Jak nenaletět: Co je to Quishing a jak se bránit?</h4>
+            <h4>💡 Jak poznat quishing příště?</h4>
             <div className="edu-grid">
               <div className="edu-item">
                 <span className="edu-icon">📱</span>
                 <div>
-                  <strong>Kontrola URL po naskenování:</strong> Moderní čtečky QR kódů vám před otevřením ukážou cílovou adresu. Pokud vede na jinou doménu než oficiální (např. <code>platba-parkovne.cz</code> místo <code>gopay.cz</code>), stránku neotvírejte.
+                  <strong>Kontrola URL po naskenování:</strong> Moderní čtečky QR kódů vám před otevřením ukážou cílovou adresu. Pokud vede na jinou doménu než oficiální (např. <code>platba-parkovne.cz</code> nebo <code>platBra.fun</code>), stránku neotvírejte.
                 </div>
               </div>
               <div className="edu-item">
                 <span className="edu-icon">🕵️</span>
                 <div>
-                  <strong>Fyzická kontrola kódu:</strong> Pokud skenujete QR kód na veřejném místě (např. na parkovacím automatu), zkontrolujte, zda se nejedná o <strong>přelepku</strong>. Útočníci často legitimní kód jednoduše přelepí svým podvodným.
+                  <strong>Fyzická kontrola QR kódu:</strong> Pokud skenujete QR kód na veřejném místě (např. na parkovacím automatu), zkontrolujte, zda se nejedná <strong> o přelepku.</strong> Útočníci často legitimní kód jednoduše přelepí svým podvodným.
                 </div>
               </div>
               <div className="edu-item">
@@ -98,11 +99,23 @@ function DiplomkaModal({ isOpen, onClose }) {
                   <strong>Preferujte oficiální aplikace:</strong> Místo skenování náhodných QR kódů raději využívejte oficiální aplikace služeb (např. MPLA pro parkování) nebo zadejte adresu webu ručně do prohlížeče.
                 </div>
               </div>
+              <div className="edu-item">
+                <span className="edu-icon">💸</span>
+                <div>
+                  <strong>Podezřele výhodná nabídka:</strong> Pokud je nabídka až nereálně výhodná, je na místě zvýšená opatrnost. Útočníci často pracují s extrémně nízkými cenami nebo vysokými slevami.
+                </div>
+              </div>
+              <div className="edu-item">
+                <span className="edu-icon">❓</span>
+                <div>
+                  <strong>Neznámý původ plakátu:</strong> Chybějící logo společnosti, kontaktní údaje nebo oficiální identifikace organizátora jsou varovným signálem.
+                </div>
+              </div>
             </div>
           </section>
 
           <div className="research-form">
-            <p className="section-title">Pomozte mi s výzkumem – anonymní údaje</p>
+            <p className="section-title">Pomozte mi s výzkumem: Jaký je váš věk?</p>
             
             <div className="form-controls">
               <div className="select-wrapper">
