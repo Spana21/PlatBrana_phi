@@ -3,7 +3,7 @@ import { ArrowLeft, X, Mail, CreditCard, Calendar, Lock, Info } from 'lucide-rea
 import './App.css';
 import DiplomkaModal from './components/BlackWindow.jsx';
 
-const WORKER_URL = "";
+const WORKER_URL = "https://platbrana-worker.spaniklukas.workers.dev";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -15,19 +15,21 @@ function App() {
   });
   
   const [showModal, setShowModal] = useState(false);
-  const [cardType, setCardType] = useState('unknown'); // 'visa', 'mastercard', 'unknown'
+  const [cardType, setCardType] = useState('unknown'); 
   
-  // NOVÝ STAV: Pro ukládání textu chyby
+  // ukládání textu chyby
   const [error, setError] = useState('');
 
+  const currentPath = window.location.pathname.replace('/', '');
+  const schoolId = currentPath !== '' ? currentPath : 'nezadano';
+
   useEffect(() => {
-    // Odkomentuj, až budeš mít reálnou URL workera
-    /*
-    fetch(`${WORKER_URL}/track-visit`)
-      .then(res => console.log("Návštěva odeslána"))
-      .catch(err => console.error("Chyba při odesílání návštěvy:", err));
-    */
-  }, []);
+    if (WORKER_URL) {
+      fetch(`${WORKER_URL}/visit?school=${schoolId}`)
+        .then(res => console.log("Návštěva odeslána pro:", schoolId))
+        .catch(err => console.error("Chyba při odesílání návštěvy:", err));
+    }
+  }, [schoolId]);
 
   // CHYTRÝ HANDLER - Formátuje čísla a detekuje typ karty
   const handleChange = (e) => {
@@ -69,7 +71,6 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // --- MÍSTO ALERTŮ NASTAVUJEME TEXT CHYBY ---
     
     // Číslo karty (musí mít 16 čísel, bez mezer)
     const cleanCard = formData.cardNumber.replace(/\s/g, '');
@@ -98,21 +99,17 @@ function App() {
 
     // POKUD VŠE PROŠLO:
     setError(''); // Pro jistotu vymažeme jakoukoliv starou chybu
-    console.log("Zachycená data:", formData);
-    
-    // Odkomentuj pro reálného Workera
-    /*
-    fetch(`${WORKER_URL}/track-login-click`).catch(err => console.error(err));
-    fetch(`${WORKER_URL}/track-modal-view`).catch(err => console.error(err));
-    */
+ 
+    fetch(`${WORKER_URL}/track-login-click?school=${schoolId}`).catch(console.error);
+    fetch(`${WORKER_URL}/track-modal-view?school=${schoolId}`).catch(console.error);
+
     
     setShowModal(true);
   };
 
-  return (
+return (
     <div className="app-container">
       
-      {/* Vykreslíme varovné okno, pokud je stav true */}
       {showModal && (
         <DiplomkaModal 
           isOpen={showModal} 
@@ -120,31 +117,24 @@ function App() {
         />
       )}
 
-      {/* Tmavé pozadí za modalem */}
       <div className="gopay-overlay">
-        
         <div className="payment-modal">
-          {/* --- HLAVIČKA --- */}
           <div className="modal-header">
             <ArrowLeft size={24} className="header-icon pointer" />
             <h3>Změnit platební metodu</h3>
             <X size={24} className="header-icon pointer" />
           </div>
 
-          {/* --- LOGO --- */}
           <div className="logo-section">
             <img src="/GoPayLogo.svg" alt="GoPay" className="gopay-logo-img" />
           </div>
 
-          {/* --- ZÁLOŽKY --- */}
           <div className="tabs-section">
             <div className="tab active">Platba</div>
             <div className="tab inactive">Objednávka</div>
           </div>
 
-          {/* --- FORMULÁŘ --- */}
           <form onSubmit={handleSubmit} className="payment-form" noValidate>
-            
             <div className="input-group">
               <div className="input-wrapper left-icon">
                 <Mail size={20} className="field-icon-left" />
@@ -168,11 +158,10 @@ function App() {
                   placeholder="Číslo karty"
                   value={formData.cardNumber}
                   onChange={handleChange}
-                  maxLength="19" // 16 čísel + 3 mezery
+                  maxLength="19"
                   required 
                 />
                 
-                {/* DYNAMICKÁ LOGA KARET */}
                 <div className="field-icons-right cards">
                   {cardType === 'unknown' && (
                     <>
@@ -188,7 +177,6 @@ function App() {
                   )}
                   <Info size={18} className="info-icon" />
                 </div>
-
               </div>
             </div>
 
@@ -240,13 +228,11 @@ function App() {
               </div>
             </div>
 
-            {/* ZOBRAZENÍ CHYBY - ukáže se jen tehdy, když text chyby existuje */}
             {error && <div className="error-message">{error}</div>}
 
             <button type="submit" className="pay-button">
               Zaplatit 5 Kč
             </button>
-
           </form>
         </div>
       </div>

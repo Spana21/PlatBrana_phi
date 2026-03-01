@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // Tady si definujeme adresu Workeru (stejná jako v App.jsx)
-const WORKER_URL = ""; 
+const WORKER_URL = "https://platbrana-worker.spaniklukas.workers.dev"; 
 
 function DiplomkaModal({ isOpen, onClose }) {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -11,40 +11,52 @@ function DiplomkaModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const ageGroups = [
-    "Méně než 18", "18 - 24", "25 - 34", "35 - 44",
+    "Méně než 17", "18 - 24", "25 - 34", "35 - 44",
     "45 - 54", "55 - 64", "65 a více"
   ];
 
   const handleDownload = async () => {
-    setIsSubmitting(true);
     
-    // 1. Spustí stažení souboru
-    const link = document.createElement('a');
-    link.href = '/informovany_souhlas.pdf'; 
-    link.download = 'Informovany_souhlas_ucastnika.pdf'; 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    setIsSubmitting(true); 
 
-    // 2. Odešle vybraný věk na server
-    if (WORKER_URL) {
-      try {
+    try {
+      // 1. Spuštění stahování souboru
+      const link = document.createElement('a');
+      link.href = '/informovany_souhlas.pdf'; 
+      link.download = 'Informovany_souhlas_ucastnika.pdf'; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 2. Získání identifikátoru školy z URL
+      const currentPath = window.location.pathname.replace('/', ''); 
+      const schoolId = currentPath !== '' ? currentPath : 'nezadano';
+
+      // 3. Odeslání dat na Worker (pokud je adresa vyplněná a není to jen prázdný text)
+      if (WORKER_URL && WORKER_URL !== "") {
         await fetch(`${WORKER_URL}/wtf`, {
           method: 'POST',
           keepalive: true,
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ age: selectedAge })
+          body: JSON.stringify({ 
+            age: selectedAge,
+            school: schoolId,
+            timestamp: new Date().toISOString() 
+          })
         });
-        console.log("Statistická data byla úspěšně odeslána.");
-      } catch (err) {
-        console.error("Chyba při odesílání dat:", err);
+        console.log(`Statistika věku odeslána pro školu: ${schoolId}`);
+      }
+    } catch (err) {
+      console.error("Chyba při zpracování:", err);
+    } finally {
+      // 4. Vypneme stav odesílání a okno zavřeme
+      setIsSubmitting(false);
+      if (typeof onClose === 'function') {
+        onClose();
       }
     }
-    
-    setIsSubmitting(false);
-    onClose();
   };
 
   return (
