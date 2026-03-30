@@ -3,7 +3,7 @@ import { ArrowLeft, X, Mail, CreditCard, Calendar, Lock, Info } from 'lucide-rea
 import './App.css';
 import DiplomkaModal from './components/BlackWindow.jsx';
 
-const WORKER_URL = "https://platbrana-worker.spaniklukas.workers.dev";
+const WORKER_URL = "https://anton-databaze.spaniklukas.workers.dev";
 
 function App() {
   const [formData, setFormData] = useState({

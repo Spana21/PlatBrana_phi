@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
+import { ShieldCheck, Lightbulb, FileText, Mail, Phone, GraduationCap } from 'lucide-react';
 
-// Tady si definujeme adresu Workeru (stejná jako v App.jsx)
-const WORKER_URL = "https://platbrana-worker.spaniklukas.workers.dev"; 
+// Tady si definujeme adresu Workeru (stejná jako v LoginScreen)
+const WORKER_URL = "https://anton-databaze.spaniklukas.workers.dev";
 
 function DiplomkaModal({ isOpen, onClose }) {
   const [isAgreed, setIsAgreed] = useState(false);
   const [selectedAge, setSelectedAge] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
@@ -16,9 +16,6 @@ function DiplomkaModal({ isOpen, onClose }) {
   ];
 
   const handleDownload = async () => {
-    
-    setIsSubmitting(true); 
-
     try {
       // 1. Spuštění stahování souboru
       const link = document.createElement('a');
@@ -51,126 +48,114 @@ function DiplomkaModal({ isOpen, onClose }) {
     } catch (err) {
       console.error("Chyba při zpracování:", err);
     } finally {
-      // 4. Vypneme stav odesílání a okno zavřeme
-      setIsSubmitting(false);
-      if (typeof onClose === 'function') {
-        onClose();
-      }
+      onClose();
     }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <header className="modal-header">
-          <div className="warning-icon">⚠️</div>
-          <h3>Pozor: Toto byla simulace Quishingu (QR Phishing)</h3>
-        </header>
+
+        <h3>Právě jste se stali součástí simulovaného testování v rámci <strong>diplomové práce</strong>.</h3>
         
-        <div className="modal-body">
-          <section className="modal-info-section">
-            <p className="modal-text">
-              Právě jste interagovali s testovací stránkou vytvořenou pro účely <strong>výzkumu v rámci diplomové práce</strong>. 
-              Tato stránka pouze napodobuje vzhled platební brány GoPay, aby demonstrovala, jak snadno lze vytvořit věrohodnou kopii platebního rozhraní.
+        <div className="modal-info-section">
+          <p className="modal-text">
+            Tato stránka není skutečným přihlašovacím portálem. Jedná se o <strong>bezpečnou simulaci</strong> v rámci výzkumu pro mou diplomovou práci.
+          </p>
+          
+          <div className="security-guarantee">
+            <h4><ShieldCheck size={28} color="#34d399" /> Vaše údaje jsou v naprostém bezpečí</h4>
+            <p>
+              Číslo vaši <strong>karty, platnost ani CVC kód nebyly nikde uloženy ani odeslány</strong>. 
+              Tato simulace slouží výhradně k anonymnímu sběru statistik pro vědecké účely. 
             </p>
-            
-            <div className="security-guarantee">
-              <h4>🛡️ Vaše soukromí je 100% zachováno</h4>
-              <p>
-                V souladu s etickými pravidly výzkumu <strong>nebyla uložena žádná citlivá data</strong>. Číslo vaší karty, platnost ani CVC kód 
-                nebyly odeslány na server ani nikde zaznamenány. Systém pouze eviduje anonymní statistiku (že na stránku někdo přišel a klikl na tlačítko). 
-             <p><strong>Jediný údaj, který o sobě můžete dobrovolně poskytnout pro potřeby výzkumu, je vaše věková kategorie níže.</strong></p>
-              </p>
+          </div>
+        </div>
+
+          <div className="education-section">
+            <h4><Lightbulb size={24} color="#34d399" style={{ verticalAlign: 'middle', marginRight: '10px' }} /> Jak se příště nenechat napálit?</h4>
+            <ul className="edu-list">
+              <li><strong>Zkontrolujte adresu (URL) po naskenování:</strong> Moderní čtečky QR kódů vám před otevřením ukážou cílovou adresu. Pokud vede na jinou doménu než oficiální (např. <code>platba-parkovne.cz</code> nebo <code>platBra.fun</code>), stránku neotvírejte.</li>
+              <li><strong>Fyzická kontrola QR kódu:</strong> Pokud skenujete QR kód na veřejném místě (např. na parkovacím automatu), zkontrolujte, zda se nejedná <strong> o přelepku.</strong> Útočníci často legitimní kód jednoduše přelepí svým podvodným.</li>
+              <li><strong>Zkracovače adres:</strong> Buďte extrémně opatrní, pokud QR kód vede na zkrácenou adresu (např. <code>bit.ly</code> nebo <code>tinyurl.com</code>). Oficiální instituce a platební brány zkracovače v QR kódech pro platby nepoužívají.</li>
+              <li><strong>Podezřele výhodná nabídka:</strong> Nabídky typu <code>„Zboží zdarma“</code>, <code>„Oběd za 1 Kč“</code> nebo <code>„Exkluzivní sleva jen dnes“</code> mohou být návnadou 
+                  vedoucí na podvodnou stránku.</li>
+              <li><strong>Neznámý původ plakátu:</strong> hybějící logo společnosti, kontaktní údaje nebo oficiální identifikace organizátora jsou varovným signálem.</li>
+            </ul>
+          </div>
+
+        {/* --- KONTAKTY --- */}
+        <div className="contact-section">
+          <div className="contact-card">
+            <h5>Zástupce ředitele školy</h5>
+            <div className="contact-item">
+              <Mail size={16} color="#34d399" />
+              <a href="mailto:Marek.Houzar@zsantoninska.cz">Marek.Houzar@zsantoninska.cz</a>
             </div>
-          </section>
-
-          <section className="education-section">
-            <h4>💡 Jak poznat quishing příště?</h4>
-            <div className="edu-grid">
-              <div className="edu-item">
-                <span className="edu-icon">📱</span>
-                <div>
-                  <strong>Kontrola URL po naskenování:</strong> Moderní čtečky QR kódů vám před otevřením ukážou cílovou adresu. Pokud vede na jinou doménu než oficiální (např. <code>platba-parkovne.cz</code> nebo <code>platBra.fun</code>), stránku neotvírejte.
-                </div>
-              </div>
-              <div className="edu-item">
-                <span className="edu-icon">🕵️</span>
-                <div>
-                  <strong>Fyzická kontrola QR kódu:</strong> Pokud skenujete QR kód na veřejném místě (např. na parkovacím automatu), zkontrolujte, zda se nejedná <strong> o přelepku.</strong> Útočníci často legitimní kód jednoduše přelepí svým podvodným.
-                </div>
-              </div>
-              <div className="edu-item">
-                <span className="edu-icon">🔗</span>
-                <div>
-                  <strong>Zkracovače adres:</strong> Buďte extrémně opatrní, pokud QR kód vede na zkrácenou adresu (např. <code>bit.ly</code> nebo <code>tinyurl.com</code>). Oficiální instituce a platební brány zkracovače v QR kódech pro platby nepoužívají.
-                </div>
-              </div>
-              <div className="edu-item">
-                <span className="edu-icon">💳</span>
-                <div>
-                  <strong>Preferujte oficiální aplikace:</strong> Místo skenování náhodných QR kódů raději využívejte oficiální aplikace služeb (např. MPLA pro parkování) nebo zadejte adresu webu ručně do prohlížeče.
-                </div>
-              </div>
-              <div className="edu-item">
-                <span className="edu-icon">💸</span>
-                <div>
-                  <strong>Podezřele výhodná nabídka:</strong> Pokud je nabídka až nereálně výhodná, je na místě zvýšená opatrnost. Útočníci často pracují s extrémně nízkými cenami nebo vysokými slevami.
-                </div>
-              </div>
-              <div className="edu-item">
-                <span className="edu-icon">❓</span>
-                <div>
-                  <strong>Neznámý původ plakátu:</strong> Chybějící logo společnosti, kontaktní údaje nebo oficiální identifikace organizátora jsou varovným signálem.
-                </div>
-              </div>
+            <div className="contact-item">
+              <Phone size={16} color="#34d399" />
+              <a href="tel:+420 530 508 980">+420 530 508 980</a>
             </div>
-          </section>
-
-          <div className="research-form">
-            <p className="section-title">Pomozte mi s výzkumem: Jaký je váš věk?</p>
-            
-            <div className="form-controls">
-              <div className="select-wrapper">
-                <label>Váš věk:</label>
-                <select 
-                  className="modal-select"
-                  value={selectedAge}
-                  onChange={(e) => setSelectedAge(e.target.value)}
-                >
-                  <option value="" disabled>Vyberte věkovou skupinu...</option>
-                  {ageGroups.map((age) => (
-                    <option key={age} value={age}>{age} let</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="agreement-wrapper">
-                <label className="checkbox-container">
-                  <input 
-                    type="checkbox" 
-                    checked={isAgreed}
-                    onChange={(e) => setIsAgreed(e.target.checked)}
-                  />
-                  Souhlasím se zapojením do anonymního výzkumu
-                </label>
-              </div>
+          </div>
+          
+          <div className="contact-card">
+            <h5>Autor výzkumu</h5>
+            <div className="contact-item">
+              <Mail size={16} color="#34d399" />
+              <a href="mailto:lukas.spanik@unob.cz">lukas.spanik@unob.cz</a>
+            </div>
+            <div className="contact-item">
+              <GraduationCap size={16} color="#34d399" />
+              <span>rtm. Lukáš Špánik</span>
             </div>
           </div>
         </div>
 
-        <footer className="modal-footer">
-          <p className="small-note">Kliknutím dokončíte simulaci a stáhnete Informovaný souhlas (PDF).</p>
+        <hr className="modal-divider" />
+
+        <div className="age-selection-section">
+          <p className="section-title">Pomozte mi s výzkumem: Do jaké věkové skupiny patříte?</p>
+          <select 
+            className="modal-select"
+            value={selectedAge}
+            onChange={(e) => setSelectedAge(e.target.value)}
+          >
+            <option value="" disabled>Vyberte prosím věkovou skupinu...</option>
+            {ageGroups.map((age) => (
+              <option key={age} value={age}>
+                {age} let
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="agreement-wrapper">
+          <label className="checkbox-container">
+            <input 
+              type="checkbox" 
+              checked={isAgreed}
+              onChange={(e) => setIsAgreed(e.target.checked)}
+            />
+            Souhlasím se zapojením do anonymního výzkumu
+          </label>
+        </div>
+
+        <div className="modal-footer">
+          <p className="small-note">Kliknutím na tlačítko stáhnete informovaný souhlas a okno se zavře.</p>
           <button 
             onClick={handleDownload} 
             className="close-btn"
-            disabled={!isAgreed || !selectedAge || isSubmitting} 
+            disabled={!isAgreed || !selectedAge} 
           >
-            {isSubmitting ? 'Odesílám...' : 'Dokončit a stáhnout PDF'}
+            <FileText size={20} style={{ verticalAlign: 'middle', marginRight: '10px' }} />
+            Stáhnout dokument a dokončit
           </button>
-          <p className="github-info">
-            Kód projektu je dostupný na <a href="https://github.com/Spana21/PlatBrana_phi" target="_blank" rel="noopener noreferrer" className="github-link">GitHubu</a>.
+          
+          <p className="github-info" style={{ marginTop: '30px' }}>
+            Projekt je plně transparentní a zdrojový kód je dostupný na 
+            <a href="https://github.com/Spana21/PlatBrana_phi" target="_blank" rel="noopener noreferrer" className="github-link"> GitHubu</a>.
           </p>
-        </footer>
+        </div>
       </div>
     </div>
   );
